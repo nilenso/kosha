@@ -1,1 +1,0 @@
-(ns kosha.app.kriti)
