@@ -11,9 +11,9 @@
 (defn ragams
   "Retrieves n ragams from the db in order of similarity to the query."
   [ragam n]
-  (let [q  ["SELECT *, similarity_score(name, ?) AS score
+  (let [q  ["SELECT ragam_id, name, arohanam, avarohanam, melakartha, mela_ragam_id, ragam_link, data_source
              FROM tmp_ragams
-             ORDER BY score
+             ORDER BY similarity_score(name, ?)
              DESC LIMIT ?; "
             ragam n]]
     (vec (j/query db-pool/conn q :identifiers ->hyphens))))
