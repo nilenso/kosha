@@ -18,6 +18,7 @@
                  [postgresql/postgresql "9.3-1102.jdbc41"]
                  [ring-middleware-format "0.3.2" :exclusions [ring]]
                  [ring/ring-core "1.5.0"]
-                 [ring/ring-jetty-adapter "1.3.2"]]
+                 [ring/ring-jetty-adapter "1.3.2"]
+                 [com.taoensso/timbre "2.7.1"]]
   :plugins [[cider/cider-nrepl "0.8.2"]]
   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"])
