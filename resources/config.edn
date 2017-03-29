@@ -13,4 +13,5 @@
             :database-name      "kosha"
             :server-name        "localhost"
             :port-number        5432
-            :register-mbeans    false}}
+            :register-mbeans    false}
+ :logging  {:level :debug}}

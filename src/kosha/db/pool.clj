@@ -1,11 +1,9 @@
 (ns kosha.db.pool
   (:require [clojure.java.jdbc :as jdbc]
             [hikari-cp.core :as hikari]
-            [immuconf.config :as cfg]))
+            [kosha.app.util :as util]))
 
-(defonce config (cfg/load "resources/config.edn"))
-
-(def datasource-options (cfg/get config :database))
+(def datasource-options (util/get-config :database))
 
 (defonce conn
   {:datasource (hikari/make-datasource datasource-options)})
