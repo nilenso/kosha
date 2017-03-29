@@ -16,7 +16,8 @@
   (-> (br/make-handler routes)
       kw-params/wrap-keyword-params
       params/wrap-params
-      logging/wrap-log-request-response))
+      logging/wrap-log-request-response
+      logging/wrap-error-logging))
 
 (defn start! [port nrepl-port]
   (nrepl/start-server :port nrepl-port :handler cider/cider-nrepl-handler)

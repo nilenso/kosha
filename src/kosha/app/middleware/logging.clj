@@ -1,5 +1,6 @@
 (ns kosha.app.middleware.logging
-  (:require [taoensso.timbre :as log]))
+  (:require [ring.util.response :as response]
+            [taoensso.timbre :as log]))
 
 (def standard-ring-request-keys
   [:server-port :server-name :remote-addr :uri :query-string :scheme
@@ -15,3 +16,23 @@
      (log/debug {:event    ::response
                  :response response})
      response)))
+
+(defn error-response
+  [status msg]
+  (-> (response/response {:error msg})
+      (response/status status)))
+
+(defn wrap-error-logging
+  [handler]
+  (fn [request]
+    (try
+      (if-let [response (handler request)]
+        response
+        (do
+          (log/error {:event   ::nil-response
+                      :request (select-keys request standard-ring-request-keys)})
+          (error-response 500 "Internal Server Error")))
+      (catch Throwable ex
+        (log/error ex {:event   ::unhandled-exception
+                       :request (select-keys request standard-ring-request-keys)})
+        (error-response 500 "Internal Server Error")))))
