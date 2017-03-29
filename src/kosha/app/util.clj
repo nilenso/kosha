@@ -1,5 +1,6 @@
 (ns kosha.app.util
-  (:require [clojure.string :as s])
+  (:require [clojure.string :as s]
+            [cheshire.core :as json])
   (:import [java.util.concurrent
             ThreadPoolExecutor
             TimeUnit
@@ -39,3 +40,8 @@
                    (.invokeAll pool tasks))]
     (.shutdown pool)
     rets))
+
+(defn json-response [response]
+  {:status 200
+   :body (json/encode response)
+   :content-type "application/json"})
