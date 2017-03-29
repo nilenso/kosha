@@ -1,4 +1,4 @@
-(ns kosha.db
+(ns kosha.db.core
   (:require [clojure.java.jdbc :as j])
   (:import java.sql.Connection
            org.postgresql.jdbc4.Jdbc4Array))
