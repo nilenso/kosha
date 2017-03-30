@@ -12,8 +12,32 @@ There are scrapers (that mine for data from select websites), there is the relat
 
 ## Usage
 
-`C-c M-j` for now.
-We'll get to this part later.
+To run the API server:
+`lein run -m kosha.main`
+The server runs by default on port 3000. To specify a port, pass a port number using the -p option:
+`lein run -m kosha.main -p 8080`
+
+## Development
+
+#### Prerequisites
+You should have the following installed on your system:
+1. [Clojure](https://clojure.org/guides/getting_started) (>= 1.7.0)
+2. [Leiningen](https://leiningen.org/#install) (>= 2.7.0)
+3. [Postgres](https://www.postgresql.org/download/) (>= 9.0)
+
+#### Setup (from database dump)
+
+Clone this repo and from the project directory, run:
+```
+> lein deps
+> createdb kosha
+> pg_restore -d kosha resources/db.dump
+```
+You can also use a custom database name by configuring it in `resources/config.edn`.
+
+## Documentation
+1. [schema.md](doc/schema.md): Describes the schema of scraped data and the domain entities.
+2. [stitching.md](doc/stitching.md): Describes the problem of stitching data from 3 different sources in Kosha.
 
 ## License
 

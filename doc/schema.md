@@ -18,7 +18,7 @@ _(2865 entries)_
 
  _(45700 entries)_
  _Has 10552 unique concerts._
- 
+
 ### tracks
 
    id   | concert_id | concert_url  | track_number | track_url
@@ -54,7 +54,7 @@ _(942 entries)_
  id |  raga_name  |       arohanam       |      avarohanam
 ----|-------------|----------------------|----------------------
   1 | Rathnāngi   | S R1 G1 M1 P D1 N2 S | S N2 D1 P M1 G1 R1 S
-  2 | Tatillatika | S R1 M1 P D1 S       | S D1 P M1 R1 S 
+  2 | Tatillatika | S R1 M1 P D1 S       | S D1 P M1 R1 S
 
 
 _(975 entries)_
@@ -66,11 +66,14 @@ _(975 entries)_
 
 ## Ragam
 
-A ragam has functional dependencies: `name`, `arohanam`, `avarohanam`, `raga_link` (wiki page), `melakartha` (if it is janya or not). 
+A ragam has functional dependencies: `name`, `arohanam`, `avarohanam`, `raga_link` (wiki page), `melakartha` (if it is janya or not).
 
-A ragam belongsTo a ragam (`mela_number`). If it is melakartha, then it can only belong to itself.
+A ragam belongsTo a ragam (`mela_ragam_id`). If it is melakartha, then it can only belong to itself.
 
 A ragam hasMany kritis.
+
+Table name: ragams
+Columns: `ragam_id`, `name`, `arohanam`, `avarohanam`, `ragam_link`, `melakartha`, `mela_ragam_id`, `data_source`
 
 ## Kriti
 
@@ -80,12 +83,17 @@ A kriti belongsTo a ragam (`ragam`).
 
 A kriti hasMany renditions.
 
+Table name: kritis
+Columns: `kriti_id`, `name`, `composer`, `lyrics`, `taala`, `language`, `meaning`, `url`, `ragam_id`, `data_source`
+
 ## Renditions/Tracks
 
 A rendition has functional dependencies: `concert_id`, `concert_url`, `track_number`, `track_url`, `main_artist`.
 
 A rendition belongsTo a kriti (`kriti`), and therefore also a ragam (`ragam`).
 
+Table name: renditions
+Columns: `rendition_id`, `concert_id`, `concert_url`, `track_number`, `main_artist`, `kriti_name`, `kriti_id`
 
 ## Other entities possible:
 
@@ -93,5 +101,3 @@ A rendition belongsTo a kriti (`kriti`), and therefore also a ragam (`ragam`).
 2. Taala
 3. Concerts
 4. Artists
-
-

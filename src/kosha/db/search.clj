@@ -12,7 +12,7 @@
   "Retrieves n ragams from the db in order of similarity to the query."
   [ragam n]
   (let [q  ["SELECT ragam_id, name, arohanam, avarohanam, melakartha, mela_ragam_id, ragam_link, data_source
-             FROM tmp_ragams
+             FROM ragams
              ORDER BY similarity_score(name, ?)
              DESC LIMIT ?; "
             ragam n]]
