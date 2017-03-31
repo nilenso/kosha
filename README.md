@@ -33,11 +33,17 @@ Clone this repo and from the project directory, run:
 > createdb kosha
 > pg_restore -d kosha resources/db.dump
 ```
-You can also use a custom database name by configuring it in `resources/config.edn`.
+You can use a custom database name by configuring it in `resources/config.edn`.
+#### Configuration
+The _config map_ can be found in [`resources/config.edn`](resources/config.edn).
+* __Database__: Configure the database access credentials by setting the values in the `:database` key of the _config map_.
+* __Front-end__: To configure the CORS policy in order to allow the frontend to query the backend, set the URL of your frontend in the `:cors` key of the _config map_.
+* __Logging Level__: Set the logging level to `:debug` OR `:error` in the `:logging` key of the _config map_.
 
 ## Documentation
 1. [schema.md](doc/schema.md): Describes the schema of scraped data and the domain entities.
 2. [stitching.md](doc/stitching.md): Describes the problem of stitching data from 3 different sources in Kosha.
+3. [API.md](doc/API.md): Documents the API endpoints for Kosha.
 
 ## License
 
