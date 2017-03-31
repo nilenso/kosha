@@ -3,6 +3,7 @@
             [cider.nrepl :as cider]
             [clojure.tools.nrepl.server :as nrepl]
             [kosha.app.middleware.logging :as logging]
+            [kosha.app.middleware.cors :as cors]
             [kosha.app.search :as search]
             [kosha.app.util :as util]
             [ring.adapter.jetty :as jetty]
@@ -19,7 +20,8 @@
       kw-params/wrap-keyword-params
       params/wrap-params
       logging/wrap-log-request-response
-      logging/wrap-error-logging))
+      logging/wrap-error-logging
+      cors/wrap-cors-policy))
 
 (log/set-level! (util/get-config :logging :level))
 
