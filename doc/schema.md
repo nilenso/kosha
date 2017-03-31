@@ -101,3 +101,8 @@ Columns: `rendition_id`, `concert_id`, `concert_url`, `track_number`, `main_arti
 2. Taala
 3. Concerts
 4. Artists
+
+
+# Ideal Schema Diagram
+![Ideal Schema](ideal-schema-diagram.png) 
+
