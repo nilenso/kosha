@@ -104,5 +104,5 @@ Columns: `rendition_id`, `concert_id`, `concert_url`, `track_number`, `main_arti
 
 
 # Ideal Schema Diagram
-![Ideal Schema](ideal-schema-diagram.png) 
+![Ideal Schema](ideal-schema-diagram.jpg) 
 
