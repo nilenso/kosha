@@ -12,8 +12,38 @@ There are scrapers (that mine for data from select websites), there is the relat
 
 ## Usage
 
-`C-c M-j` for now.
-We'll get to this part later.
+To run the API server:
+`lein run -m kosha.main`
+The server runs by default on port 3000. To specify a port, pass a port number using the -p option:
+`lein run -m kosha.main -p 8080`
+
+## Development
+
+#### Prerequisites
+You should have the following installed on your system:
+1. [Clojure](https://clojure.org/guides/getting_started) (>= 1.7.0)
+2. [Leiningen](https://leiningen.org/#install) (>= 2.7.0)
+3. [Postgres](https://www.postgresql.org/download/) (>= 9.0)
+
+#### Setup (from database dump)
+
+Clone this repo and from the project directory, run:
+```
+> lein deps
+> createdb kosha
+> pg_restore -d kosha resources/db.dump
+```
+You can use a custom database name by configuring it in `resources/config.edn`.
+#### Configuration
+The _config map_ can be found in [`resources/config.edn`](resources/config.edn).
+* __Database__: Configure the database access credentials by setting the values in the `:database` key of the _config map_.
+* __Front-end__: To configure the CORS policy in order to allow the frontend to query the backend, set the URL of your frontend in the `:cors` key of the _config map_.
+* __Logging Level__: Set the logging level to `:debug` OR `:error` in the `:logging` key of the _config map_.
+
+## Documentation
+1. [schema.md](doc/schema.md): Describes the schema of scraped data and the domain entities.
+2. [stitching.md](doc/stitching.md): Describes the problem of stitching data from 3 different sources in Kosha.
+3. [API.md](doc/API.md): Documents the API endpoints for Kosha.
 
 ## License
 
