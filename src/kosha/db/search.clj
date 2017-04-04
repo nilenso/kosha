@@ -1,9 +1,6 @@
 (ns kosha.db.search
   (:require [clojure.java.jdbc :as j]
-            [clojure.set :as set]
-            [kosha.db.pool :as db-pool]
-            [pg-hstore.core :as hs]
-            [medley.core :as m]))
+            [kosha.db.pool :as db-pool]))
 
 (defn ->hyphens [^String x]
   (keyword (.replace x \_ \-)))
