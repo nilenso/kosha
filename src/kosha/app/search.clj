@@ -6,10 +6,10 @@
 (defn get-ragam
   "Retrieves 10 best matches for given ragam name."
   [{:keys [params] :as request}]
-  (let [ragams (db-search/ragams (:q params) 10)]
+  (let [ragams (db-search/ragams (:query params) 10)]
     (util/json-response ragams)))
 
 (defn handler [{:keys [params] :as request}]
-  (let [type (get-in request [:params :t])]
+  (let [type (get-in request [:params :type])]
     (case type
       "ragam" (get-ragam request))))

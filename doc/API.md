@@ -1,7 +1,7 @@
 ## API Endpoints
-#### GET /search?q=\<query\>&t=\<type\>
+#### GET /search?query=\<query\>&type=\<type\>
 Example:
-* Query: `GET /search?q=gaula&t=ragam`
+* Query: `GET /search?query=gaula&type=ragam`
 
 * Response:
 ```json
