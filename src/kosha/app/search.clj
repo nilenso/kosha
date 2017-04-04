@@ -3,7 +3,7 @@
             [kosha.app.util :as util]))
 
 
-(defn get-ragam
+(defn get-ragams
   "Retrieves 10 best matches for given ragam name."
   [query]
   (let [ragams (db-search/ragams query 10)]
@@ -13,4 +13,4 @@
   (let [type (:type params)
         query (:query params)]
     (case type
-      "ragam" (get-ragam query))))
+      "ragam" (get-ragams query))))

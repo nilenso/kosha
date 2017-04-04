@@ -14,7 +14,7 @@
 
 (def routes ["/" [["" (br/->ResourcesMaybe {:prefix "public/"})]
                   ["search" search/handler]
-                  ["ragam/" {[#"\d+" :ragam-id] ragam/handler}]]])
+                  ["ragam/" {[:ragam-id] ragam/handler}]]])
 
 (def main-handler
   (-> (br/make-handler routes)
