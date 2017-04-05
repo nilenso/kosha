@@ -5,7 +5,8 @@
 (defn response-body
   "Join ragam data, its kritis and its parent ragam into a single map."
   [ragam kritis parent]
-  (-> ragam
+  (-> {}
+      (assoc :ragam ragam)
       (assoc :kritis kritis)
       (assoc :parent-ragam parent)))
 
