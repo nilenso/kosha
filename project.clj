@@ -22,4 +22,5 @@
                  [ring/ring-core "1.5.0"]
                  [ring/ring-jetty-adapter "1.3.2"]]
   :plugins [[cider/cider-nrepl "0.8.2"]]
-  :jvm-opts ["-XX:-OmitStackTraceInFastThrow"])
+  :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
+  :main kosha.main)
