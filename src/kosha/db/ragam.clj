@@ -1,7 +1,5 @@
 (ns kosha.db.ragam
-  (:require [clojure.java.jdbc :as j]
-            [kosha.db.pool :as db-pool]
-            [kosha.db.util :as db-util]))
+  (:require [kosha.db.util :as db-util]))
 
 (defn ragam
   "Retrieves details of a ragam given it's id."
@@ -10,7 +8,7 @@
             FROM ragams
             WHERE ragam_id = ?; "
            ragam-id]]
-    (first (j/query db-pool/conn q :identifier db-util/->hyphens))))
+    (first (db-util/run-query q))))
 
 (defn kritis-of-ragam
   "Retrieves all kritis of a ragam with the given id."
@@ -19,4 +17,4 @@
             FROM kritis
             WHERE ragam_id = ?; "
            ragam-id]]
-    (vec (j/query db-pool/conn q :identifer db-util/->hyphens))))
+    (vec (db-util/run-query q))))

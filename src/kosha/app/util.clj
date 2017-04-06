@@ -7,6 +7,6 @@
    :body (json/encode response)
    :content-type "application/json"})
 
-(defonce config (config/load "resources/config.edn"))
+(defonce config-map (config/load "resources/config.edn"))
 (defn get-config [& ks]
-  (apply config/get config ks))
+  (apply config/get config-map ks))
