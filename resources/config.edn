@@ -16,4 +16,5 @@
             :register-mbeans    false}
  :logging  {:level :debug}
  :cors     {:allowed-origins "http://localhost:3449"
-            :allowed-methods "GET, POST, OPTIONS"}}
+            :allowed-methods "GET, POST, OPTIONS"}
+ :api      {:search-results 20}}
