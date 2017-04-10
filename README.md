@@ -12,12 +12,20 @@ There are scrapers (that mine for data from select websites), there is the relat
 
 ## Usage
 
+#### During Development
 To run the API server:
 `lein run -m kosha.main`
 The server runs by default on port 3000. To specify a port, pass a port number using the -p option:
 `lein run -m kosha.main -p 8080`
 
-## Development
+#### Deployment
+To deploy, after changing the configuration in `resources/config.edn`, run `bin/deploy` with two enviroment variables `LEINPATH` and `SERVER_PORT` passed to it. For example, run the following in a terminal from the project directory:
+```
+LEINPATH=/home/deploy/lein SERVER_PORT=8080 bin/deploy
+```
+This starts the API server on port 8080 and logs to `kosha_server.log`.
+
+## Installation
 
 #### Prerequisites
 You should have the following installed on your system:

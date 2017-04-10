@@ -1,6 +1,7 @@
-#!/bin/sh
-
-from=`dirname $0`
-root=`cd ${from}/..; pwd`
-
-java -cp $(lein classpath) clojure.main ${root}/src/kosha/main.clj
+set -ex
+if [ -z ${SERVER_PORT} ]
+  then
+    java -jar target/kosha-0.1.0-SNAPSHOT-standalone.jar
+  else
+    java -jar target/kosha-0.1.0-SNAPSHOT-standalone.jar -p ${SERVER_PORT}
+fi

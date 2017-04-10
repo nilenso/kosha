@@ -1,12 +1,7 @@
 (ns kosha.db.search
   (:require [clojure.java.jdbc :as j]
-            [clojure.set :as set]
             [kosha.db.pool :as db-pool]
-            [pg-hstore.core :as hs]
-            [medley.core :as m]))
-
-(defn ->hyphens [^String x]
-  (keyword (.replace x \_ \-)))
+            [kosha.db.util :as db-util]))
 
 (defn ragams
   "Retrieves n ragams from the db in order of similarity to the query."
@@ -16,4 +11,4 @@
              ORDER BY similarity_score(name, ?)
              DESC LIMIT ?; "
             ragam n]]
-    (vec (j/query db-pool/conn q :identifiers ->hyphens))))
+    (vec (j/query db-pool/conn q :identifiers db-util/->hyphens))))
