@@ -8,9 +8,10 @@
 (defn get-results
   "Retrieves 2n best matches for given ragam or kriti name."
   [query n]
-  (let [ragams (future (db-search/ragams query n))
-        kritis (future (db-search/kritis query n))]
-    (util/json-response (into [] (concat @ragams @kritis)))))
+  (let [ragams  (future (db-search/ragams query n))
+        kritis  (future (db-search/kritis query n))
+        results (sort-by :similarity > (concat @ragams @kritis))]
+    (util/json-response (into [] results))))
 
 (defn handler [{:keys [params]}]
   (let [query (:query params)]
