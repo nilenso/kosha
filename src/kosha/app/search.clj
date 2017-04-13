@@ -5,14 +5,13 @@
 
 (def no-of-results (util/get-config :api :search-results))
 
-(defn get-ragams
-  "Retrieves n best matches for given ragam name."
+(defn get-results
+  "Retrieves 2n best matches for given ragam or kriti name."
   [query n]
-  (let [ragams (db-search/ragams query n)]
-    (util/json-response ragams)))
+  (let [ragams (future (db-search/ragams query n))
+        kritis (future (db-search/kritis query n))]
+    (util/json-response (into [] (concat @ragams @kritis)))))
 
 (defn handler [{:keys [params]}]
-  (let [type (:type params)
-        query (:query params)]
-    (case type
-      "ragam" (get-ragams query no-of-results))))
+  (let [query (:query params)]
+    (get-results query no-of-results)))
