@@ -33,3 +33,23 @@ Body: {
 "parent-ragam":{"ragam-id":1812,"name":"M?yam?lava Gowla","arohanam":"S R1 G3 M1 P D1 N3 S","avarohanam":"S N3 D1 P M1 G3 R1 S","wiki-page":"/wiki/Mayamalavagowla","melakartha":true,"mela-ragam-id":null,"data-source":"Wikipedia"},"kritis":[],"parent-ragam":null}
 }
 ```
+
+#### GET /kriti/<kriti-id>
+Example:
+* Query: `GET /kriti/3575`
+
+* Response:
+```json
+Status Code: 200
+Body: {
+"kriti": {"kriti_id":3575,"name":"shrI_lalitE","composer":"muthaiah_bAgavatar","taala":null,"url":null,"lyrics":null,"meaning":null,"ragam_id":740,"data_source":"Sangeethapriya"},
+"renditions":[
+{"rendition_id":15523,"concert_id":"01-C1541",
+"concert_url":"http://www.sangeethamshare.org/tvg/UPLOADS-1601---1800/1677-MB-Chamundamba_Ashtothra_Krithis-Part-7/",
+"track_number":6,
+"url":"http://sangeethapriya.ravisnet.com:8080/cgi-bin/download.cgi?c2FuZ2VldGhhbXNoYXJlLm9yZy9wdWJsaWNfaHRtbC90dmcvVVBMT0FEUy0xNjAxLS0tMTgwMC8xNjc3LU1CLUNoYW11bmRhbWJhX0FzaHRvdGhyYV9Lcml0aGlzLVBhcnQtNy8wNi1TaHJpX2xhbGl0ZV9qYWdhbm1hdGUtbmFkYW5hbWFrcml5YS1tdXR0aWFoX2JoYWdhdmF0YXIubXAz",
+"main_artist":"Chinmaya Sisters - Uma,Radhika",
+"kriti_name":"shrI_lalitE",
+"kriti_id":3575}]
+}
+```

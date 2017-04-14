@@ -6,6 +6,7 @@
             [kosha.app.middleware.cors :as cors]
             [kosha.app.search :as search]
             [kosha.app.ragam :as ragam]
+            [kosha.app.kriti :as kriti]
             [kosha.app.util :as util]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.params :as params]
@@ -14,7 +15,8 @@
 
 (def routes ["/" [["" (br/->ResourcesMaybe {:prefix "public/"})]
                   ["search" search/handler]
-                  ["ragam/" {[:ragam-id] ragam/handler}]]])
+                  ["ragam/" {[:ragam-id] ragam/handler}]
+                  ["kriti/" {[:kriti-id] kriti/handler}]]])
 
 (def main-handler
   (-> (br/make-handler routes)
