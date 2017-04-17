@@ -1,7 +1,5 @@
 (ns kosha.db.search
-  (:require [clojure.java.jdbc :as j]
-            [kosha.db.pool :as db-pool]
-            [kosha.db.util :as db-util]))
+  (:require [kosha.db.util :as db-util]))
 
 (defn ragams
   "Retrieves n ragams from the db in order of similarity to the query."
@@ -11,7 +9,7 @@
              ORDER BY similarity_score(name, ?)
              DESC LIMIT ?; "
             ragam ragam n]]
-    (vec (j/query db-pool/conn q :identifiers db-util/->hyphens))))
+    (vec (db-util/run-query q))))
 
 (defn kritis
   "Retrieves n ragams from the db in order of similarity to the query."
@@ -21,4 +19,4 @@
              ORDER BY similarity_score(name, ?)
              DESC LIMIT ?; "
            kriti kriti n]]
-    (vec (j/query db-pool/conn q :identifiers db-util/->hyphens))))
+    (vec (db-util/run-query q))))

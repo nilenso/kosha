@@ -7,4 +7,4 @@
 
 (defn run-query
   [query]
-  (j/query db-pool/conn query :identifier ->hyphens))
+  (j/query db-pool/conn query :identifiers ->hyphens))
