@@ -1,8 +1,8 @@
-#!/bin/bash
-
+#!/bin/sh
 set -ex
-cd "$( dirname "${BASH_SOURCE[0]}" )"
-cd ..
-git pull
+
+# This scripts assumes that it lies in the bin/ directory of the kosha project directory.
+BIN_DIRECTORY="$(cd "$(dirname "$0")" && pwd)"
+cd ${BIN_DIRECTORY}/..
 ${LEINPATH} uberjar
 nohup bin/run-server > kosha_server.log &
