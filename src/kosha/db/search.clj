@@ -14,7 +14,7 @@
 (defn kritis
   "Retrieves n ragams from the db in order of similarity to the query."
   [kriti n]
-  (let [q  ["SELECT kriti_id AS id, name, composer, taala, language, similarity_score(name, ?) AS similarity, 'kriti' AS type
+  (let [q  ["SELECT kriti_id AS id, name, composer, taala, language, similarity_score(name, ?) AS similarity, data_source, 'kriti' AS type
              FROM kritis
              ORDER BY similarity_score(name, ?)
              DESC LIMIT ?; "
