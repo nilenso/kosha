@@ -4,9 +4,10 @@
 (defn kriti
   "Retrieve details of a kriti given it's kriti_id."
   [kriti-id]
-  (let [q ["SELECT kriti_id, name, composer, taala, url, lyrics, meaning, ragam_id, data_source
-            FROM kritis
-            WHERE kriti_id = ?; "
+  (let [q ["SELECT k.kriti_id, k.name, k.composer, k.taala, k.url, k.lyrics, k.meaning, k.ragam_id, k.data_source, r.name AS ragam_name
+            FROM kritis k
+            JOIN ragams r
+            ON k.kriti_id = ? AND r.ragam_id = k.ragam_id; "
            kriti-id]]
     (first (db-util/run-query q))))
 
