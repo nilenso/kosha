@@ -13,21 +13,41 @@
 
 (defn rename-stanza-keys
   "Renames keys of stanzas to replace spaces in them, if the lyrics has named stanzas."
-  [{:keys [content has-named-stanzas] :as lyrics}]
+  [content]
   (let [lyrics-map   (hs/from-hstore content)
         stanza-keys  (keys lyrics-map)
         new-names    (into {} (map (juxt identity to-kebab-case) stanza-keys))]
-    (if has-named-stanzas
-      (assoc lyrics :content (set/rename-keys (hs/from-hstore content) new-names))
-      lyrics)))
+    (set/rename-keys (hs/from-hstore content) new-names)))
+
+(defn remove-keys
+  "Removes all keys in the given collection from the given map."
+  [map keys-coll]
+  (apply dissoc map keys-coll))
+
+(defn parse-charanams
+  "Parses charanams into a vector under :charanams key if the lyrics has named stanzas"
+  [content]
+  (let [max-charanams          (count (keys content))
+        charanam-key-names     (map #(str "caraNam-" %) (range 1 max-charanams))
+        possible-charanam-keys (concat [:caraNam] (map keyword charanam-key-names))
+        charanams              (into [] (vals (select-keys content possible-charanam-keys)))]
+    (-> content
+        (assoc :charanams charanams)
+        (remove-keys possible-charanam-keys))))
 
 (defn parse-lyrics
   "Parses lyrics of a kriti into a clojure map if it has named stanzas."
   [lyrics]
-  (-> lyrics
-      (hs/from-hstore)
-      (update :has-named-stanzas (partial = "true"))
-      (rename-stanza-keys)))
+  (as-> lyrics lyr
+    (when lyr
+      (-> lyr
+          (hs/from-hstore)
+          (update :has-named-stanzas (partial = "true"))))
+    (if (:has-named-stanzas lyr)
+      (-> lyr
+          (update :content rename-stanza-keys)
+          (update :content parse-charanams))
+      lyr)))
 
 (defn kriti
   "Retrieve details of a kriti given it's kriti_id."
