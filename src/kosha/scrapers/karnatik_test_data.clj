@@ -1,5 +1,6 @@
 (ns kosha.scrapers.karnatik-test-data
   (:require [clojure.edn :as edn]
+            [clojure.pprint :as pp]
             [clojure.string :as str]
             [kosha.scrapers.util :as util])
   (:import org.jsoup.Jsoup
@@ -62,15 +63,21 @@
        (rseq)
        (grouped-ragams)))
 
-(defn get-all-ragams
-  []
-  (for [char karnatik-chars]
-    (hash-map char (ragam-name-sets char))))
-
 (defn synonyms
   [name-sets]
-  (for [name-set name-sets]
-    (let [name (first (first (filter second name-set)))
-          synonym-ragams (remove second name-set)
-          synonym-names (map first synonym-ragams)]
-    [name synonym-names])))
+  (mapcat seq
+          (for [name-set name-sets]
+            (let [name (first (first (filter second name-set)))
+                  synonym-names (apply hash-set (map first name-set))]
+              [name synonym-names]))))
+
+(defn get-all-ragams
+  []
+  (into {}
+        (for [char karnatik-chars]
+          (let [syns (synonyms (ragam-name-sets char))]
+            (hash-map (keyword char) (apply hash-map syns))))))
+
+(defn write-to-file
+  []
+  (spit output-filename (-> (get-all-ragams) pp/pprint with-out-str)))
