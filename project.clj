@@ -21,6 +21,7 @@
                  [ring-middleware-format "0.3.2" :exclusions [ring]]
                  [ring/ring-core "1.5.0"]
                  [ring/ring-jetty-adapter "1.3.2"]]
-  :plugins [[cider/cider-nrepl "0.8.2"]]
+  :plugins [[refactor-nrepl "2.3.0-SNAPSHOT"]
+            [cider/cider-nrepl "0.12.0"]]
   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
   :main kosha.main)
