@@ -1,4 +1,4 @@
-(ns kosha.scrapers.karnatik-test-data
+(ns kosha.scrapers.test-data.karnatik
   (:require [clojure.edn :as edn]
             [clojure.pprint :as pp]
             [clojure.string :as str]
@@ -27,6 +27,7 @@
   (not (empty? (.children jsoup-anchor-tag))))
 
 (defn ragam-anchor-tags
+  "Call the url to scrape, and obtain the data of interest, i.e. ragam names."
   [url]
   (-> (util/url->jsoup url)
       (.select "tbody")
@@ -44,12 +45,14 @@
         (not (second elem)) (conj acc elem)))
 
 (defn ragam-name-vectors
+  "Convert each jsoup anchor tag in argument to ['ragamname', boolean] pair."
   [ragam-anchor-tags]
   (->> ragam-anchor-tags
        (map (juxt ragam-name has-children?))
        (vec)))
 
 (defn grouped-ragams
+  "Take a vector of ragam vectors, and group the vectors if they are synonyms for the same ragam."
   [ragam-vectors]
   (->> ragam-vectors
        (reduce add-separators [])
@@ -64,6 +67,7 @@
        (grouped-ragams)))
 
 (defn synonyms
+  "Given a vector of grouped ragams as ['ragam-name', boolean] pairs, convert to kv, where v is the set of synonyms."
   [name-sets]
   (mapcat seq
           (for [name-set name-sets]
@@ -72,6 +76,7 @@
               [name synonym-names]))))
 
 (defn get-all-ragams
+  "Return a map where keys are beginning letters, and values are maps of ragam-name->synonyms."
   []
   (into {}
         (for [char karnatik-chars]
