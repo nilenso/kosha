@@ -7,7 +7,9 @@
            [org.jsoup.nodes Document Element]
            org.jsoup.select.Elements))
 
-(def output-filename "output/test-data.edn")
+(def output-filename "output/classified-test-data.edn")
+(def test-data-output-filename "output/test-data.edn")
+
 (defn karnatik-url
   [letter]
   (str "http://www.karnatik.com/ragas" letter ".shtml"))
@@ -75,14 +77,24 @@
                   synonym-names (apply hash-set (map first name-set))]
               [name synonym-names]))))
 
-(defn get-all-ragams
+(defn get-all-classified-ragams
   "Return a map where keys are beginning letters, and values are maps of ragam-name->synonyms."
   []
   (into {}
-        (for [char karnatik-chars]
-          (let [syns (synonyms (ragam-name-sets char))]
-            (hash-map (keyword char) (apply hash-map syns))))))
+        (vec (for [char karnatik-chars]
+               (let [syns (synonyms (ragam-name-sets char))]
+                 (apply hash-map syns))))))
+
+(defn get-all-ragam-names
+  []
+  (flatten (for [letter karnatik-chars]
+             (->> (karnatik-url letter)
+                  ragam-anchor-tags
+                  (map ragam-name)
+                  (vec)))))
 
 (defn write-to-file
   []
-  (spit output-filename (-> (get-all-ragams) pp/pprint with-out-str)))
+  (spit output-filename (-> (get-all-classified-ragams) pp/pprint with-out-str))
+  (println "Wrote classified test data.")
+  (spit test-data-output-filename (-> (get-all-ragam-names) pp/pprint with-out-str)))
