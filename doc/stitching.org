@@ -1,0 +1,60 @@
+* Stitching
+
+** Problem
+
+Kosha scrapes data from Sangeethapriya, Karnatik and Wikipedia. All three sources have different schema, and have to be /stitched/ into a mediated schema.
+
+These three sources of data are [[https://en.wikipedia.org/wiki/Semantic_heterogeneity][semantically heteregenous]], i.e. there are three different schemas developed by independent parties for the same domain, resulting in differences in meaning and interpretation of data values.
+
+*E.g.*: the ragam /Gangeyabhushani/ is spelt in the Karnatik dataset as /gangayabhooshhani/ and in the Sangeethapriya dataset as /gAngEyabhUshaNi/.
+
+To map these different values to a single semantic category, we must [[https://en.wikipedia.org/wiki/Semantic_translation][semantically translate]] values to match and establish equivalence of *instances* (e.g. /gangayabhooshhani/ ≡  /gAngEyabhUshaNi/, in the above case). Class equivalence (e.g. /tracks/ ≡ /renditions/) and attribute equivalence (e.g. /raga\_name/ ≡ /raga/) can be established manually because there are only a few such terms.
+
+However, matching of instances must be done programmatically as they are higher in number (or crowdsourced).
+
+
+** Solution
+
+The book /[[http://infolab.stanford.edu/~ullman/mmds/book.pdf][Mining of Massive Datasets]]/ by /A. Rajaraman and Jeff Ullman/ identifies this problem as *'Entity Resolution'* /(pg. 111)/. The solution consists of two parts:
+
+1. Define a string metric to assign a similarity score to each pair of strings (e.g. raga names).
+2. Use the [[https://en.wikipedia.org/wiki/Locality-sensitive_hashing][Locality-Sensitive Hashing (LSH)]] scheme: classify string pairs into buckets, and apply different distance metrics on each bucket. These distance metrics may also include contextual information (e.g. how many kritis of raga A and B are similar).
+
+Here, we document the LSH approach and catalogue the various string distance metrics we could experiment with.
+
+### 1. Locality-Sensitive Hashing (LSH)
+
+Steps involved:
+
+1. We use our distance metric on each pair of strings to assign a probability indicating that they are semantically equivalent.
+2. We classify these string pairs into buckets based on the probability range they are in.
+3. For each bucket, we apply different types of distance metrics to the string pairs in it. These different distance metrics form a /family of Locally-Sensitive Functions/. We can 'amplify' this family of distance metrics by combining two LSF families using AND-construction or OR-construction /(pg. 101 of book)/.
+
+The next section discusses different distance metrics, and thus gives an idea of the functions in an LSF family of interest.
+
+### 2. String distance metrics
+
+String metrics map a pair of strings (S, T) to a real number R. A survey of string matching techniques is available in the paper /[[http://www.cs.cmu.edu/~wcohen/postscript/ijcai-ws-2003.pdf][A Comparison of String Distance Metrics for Name-Matching Tasks]]/. The paper also describes how to combine two different string distance metrics.
+
+#### String metrics for transliterated Indic text
+The paper identifies the /Jaro-Winkler metric/ as better-performing. However, since Kosha involves matching of transliterated Indic text, a combination of a phonetic scheme such as the /Soundex metric/ and the /Jaro-Winkler metric/ seems more promising. Also, since different words may have similar endings (e.g. manohari, malahari, bilahari) or similar beginnings (e.g. hamsanārāyani, hamsanaadam), a token-based distance metric as described in the paper could be used, after tokens have been identified based on token frequencies in each dataset.
+
+#### Distance metrics based on context
+Distance and similarity metrics are more general than string metrics. They can also look at contextual information in cases where using only a string metric gives rise to uncertainity. *E.g.*: if a raga name-string S from Sangeethapriya and a raga name-string K from Karnatik are only 75% likely to be equivalent based on the above scheme, we can check for the kritis associated with S and K in the respective databases and see how well they match. Thus, distance metrics map a pair of strings (S,T) and their shared context C to a real number R.
+
+#### Other notions of distance
+The definition of a distance metric is not limited to the inherent properties of the string/entity. For example, the /normalized Google distance (NGD)/ between two words S and T is defined as a function of the number of times T occurs in the Google search results of the word S ([[https://arxiv.org/pdf/0901.4180.pdf][source]]).
+
+
+** Subproblems
+
+*** Finding sets of strings similar to each other.
+
+We need to group a set *S* of strings, into a set *G* of sets, where for each set *g* /E/ *G*, *g* = *{* /(a,b)/ *|* /a,b/ E *S* where /similarity/(/a/,/b/) > /minimum/ *}*, where /minimum/ is a user-specified minimum threshold value and /similarity/ is a user-specified string similarity function.
+
+
+**** How do we do this?
+
+1. *Create graph*: Consider each string *s* /E/ *S* to be a node in an undirected graph *T*.
+2. *Connect edges*: For all pairs /(s1, s2)/ where /s1, s2/ /E/ *S*, an edge exists from /s1/ to /s2/ if /similarity/(s1, s2) > minimum.
+3. *Find connected components*: The set of connected components of the graph *T* gives the grouping *G* that we require.
