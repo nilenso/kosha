@@ -3,18 +3,18 @@
 /* Assumes that the id column is named 'name_id', and the column of strings is called 'names' */
 DROP FUNCTION similarity_graph_string(text, text, integer);
 CREATE OR REPLACE function similarity_graph_string(table_name text, fn_name text, threshold_min int) RETURNS TABLE (source varchar(100), target varchar(100)) AS
-'
+$BODY$
 DECLARE
   row record;
   match record;
   ragam_name varchar(100);
   ragam_name_id int;
 BEGIN
-FOR row IN EXECUTE ''SELECT name_id, name FROM '' || quote_ident(table_name) || '';'' LOOP
+FOR row IN EXECUTE format('SELECT name_id, name FROM %I;', table_name) LOOP
   ragam_name := row.name;
   ragam_name_id := row.name_id;
-  RETURN QUERY EXECUTE ''SELECT name AS source, '' || quote_literal(ragam_name) || ''::varchar(100) AS target FROM '' || quote_ident(table_name) || '' WHERE name != '' || quote_literal(ragam_name) || '' AND similarity_score ('' || quote_literal(ragam_name) || '', name) > '' || threshold_min || '';'';
+  RETURN QUERY EXECUTE format('SELECT name AS source, %1$L::varchar(100) AS target FROM %2$I WHERE name != %1$L AND %3$s(%1$L, name) > %4$s;', ragam_name, table_name, fn_name, threshold_min);
   END LOOP;
 END;
-'
+$BODY$
 language 'plpgsql';
