@@ -13,9 +13,9 @@
   [query]
   (j/execute! db-pool/conn query))
 
-(defn insert-multiple
+(defn insert-multiple-names
   [values table]
-  (let [table-name (:table table)
+  (let [table-name (:name table)
         col (:name-column table)
         rows (for [row values]
                {(keyword col) row})]
