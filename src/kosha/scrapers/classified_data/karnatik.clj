@@ -1,4 +1,4 @@
-(ns kosha.scrapers.test-data.karnatik
+(ns kosha.scrapers.classified-data.karnatik
   (:require [clojure.edn :as edn]
             [clojure.pprint :as pp]
             [clojure.string :as str]
