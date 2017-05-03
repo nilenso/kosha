@@ -1,5 +1,18 @@
 * Stitching
 
+1. Problem
+   + [[#problem][Statement]]
+   + [[#solution][Possible Solutions]]
+2. [[#subproblems][Subproblems]]
+   + [[#finding-sets-of-strings-similar-to-each-other][String matching]]
+   + [[#scoring-evaluating-the-quality-of-stitching][Scoring a stitching strategy]]
+   + [[#score-map-description-of-stats][Score map description]]
+       + [[#by-edges][Edge comparisons]]
+       + [[#by-sets][Grouping comparisons]]
+3. [[#usage][Usage]]
+   + [[#stitching-1][Stitching]]
+   + [[#scoring][Scoring]]
+
 ** Problem
 
 Kosha scrapes data from Sangeethapriya, Karnatik and Wikipedia. All three sources have different schema, and have to be /stitched/ into a mediated schema.
