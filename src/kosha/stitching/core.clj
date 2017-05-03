@@ -1,7 +1,9 @@
 (ns kosha.stitching.core
   (:require [kosha.db.util :as db-util]
             [kosha.scrapers.classified-data.karnatik-reader :as data]
-            [kosha.stitching.scoring :as score]))
+            [kosha.stitching.scoring :as score]
+            [kosha.stitching.util :as util]
+            [loom.alg :as graph]))
 
 (defn create-names-table
   "Creates a new table with (id, name) and returns a map of id-column name, name-column name, table-name."
@@ -51,12 +53,6 @@
         edges (db-util/run-query q)]
     (set (map #(hash-set (:source %) (:target %)) edges))))
 
-(comment
-  ;; Example usage for scoring a strategy. In this case, similarity_score with min 7/10.
-  (def *all-ragams (data/read-scraped "output/test-data.edn"))
-  (def *classified-ragams (data/read-scraped "output/classified-test-data.edn"))
-  (def *names-table (write-names-to-table all-ragams (create-names-table "temp_table")))
-  ;; In case you already have a table of names, then use (def *names-table {:name "temp_table" :id-column "id" :names-column "name"})
-  (def *expected-edges (data/edge-list *classified-ragams))
-  (def *actual-edges (get-edges-by-string *names-table "similarity_score" 7))
-  (def *score (score/compare-edge-lists *expected-edges *actual-edges)))
+(defn similar-ragams
+  [edges]
+  (graph/connected-components (util/graph edges)))

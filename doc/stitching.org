@@ -22,7 +22,7 @@ The book /[[http://infolab.stanford.edu/~ullman/mmds/book.pdf][Mining of Massive
 
 Here, we document the LSH approach and catalogue the various string distance metrics we could experiment with.
 
-### 1. Locality-Sensitive Hashing (LSH)
+*** 1. Locality-Sensitive Hashing (LSH)
 
 Steps involved:
 
@@ -32,17 +32,17 @@ Steps involved:
 
 The next section discusses different distance metrics, and thus gives an idea of the functions in an LSF family of interest.
 
-### 2. String distance metrics
+*** 2. String distance metrics
 
 String metrics map a pair of strings (S, T) to a real number R. A survey of string matching techniques is available in the paper /[[http://www.cs.cmu.edu/~wcohen/postscript/ijcai-ws-2003.pdf][A Comparison of String Distance Metrics for Name-Matching Tasks]]/. The paper also describes how to combine two different string distance metrics.
 
-#### String metrics for transliterated Indic text
+**** String metrics for transliterated Indic text
 The paper identifies the /Jaro-Winkler metric/ as better-performing. However, since Kosha involves matching of transliterated Indic text, a combination of a phonetic scheme such as the /Soundex metric/ and the /Jaro-Winkler metric/ seems more promising. Also, since different words may have similar endings (e.g. manohari, malahari, bilahari) or similar beginnings (e.g. hamsanārāyani, hamsanaadam), a token-based distance metric as described in the paper could be used, after tokens have been identified based on token frequencies in each dataset.
 
-#### Distance metrics based on context
+**** Distance metrics based on context
 Distance and similarity metrics are more general than string metrics. They can also look at contextual information in cases where using only a string metric gives rise to uncertainity. *E.g.*: if a raga name-string S from Sangeethapriya and a raga name-string K from Karnatik are only 75% likely to be equivalent based on the above scheme, we can check for the kritis associated with S and K in the respective databases and see how well they match. Thus, distance metrics map a pair of strings (S,T) and their shared context C to a real number R.
 
-#### Other notions of distance
+**** Other notions of distance
 The definition of a distance metric is not limited to the inherent properties of the string/entity. For example, the /normalized Google distance (NGD)/ between two words S and T is defined as a function of the number of times T occurs in the Google search results of the word S ([[https://arxiv.org/pdf/0901.4180.pdf][source]]).
 
 
@@ -50,11 +50,44 @@ The definition of a distance metric is not limited to the inherent properties of
 
 *** Finding sets of strings similar to each other.
 
-We need to group a set *S* of strings, into a set *G* of sets, where for each set *g* /E/ *G*, *g* = *{* /(a,b)/ *|* /a,b/ E *S* where /similarity/(/a/,/b/) > /minimum/ *}*, where /minimum/ is a user-specified minimum threshold value and /similarity/ is a user-specified string similarity function.
+We need to group a set *S* of strings, into a set *G* of sets, where for each set *g* /E/ *G*, *g* = *{* /(a,b)/ *|* /a,b/ E *S* where /similarity/ (/a/, /b/) > /minimum/ *}*, where /minimum/ is a user-specified minimum threshold value and /similarity/ is a user-specified string similarity function.
 
 
 **** How do we do this?
 
 1. *Create graph*: Consider each string *s* /E/ *S* to be a node in an undirected graph *T*.
-2. *Connect edges*: For all pairs /(s1, s2)/ where /s1, s2/ /E/ *S*, an edge exists from /s1/ to /s2/ if /similarity/(s1, s2) > minimum.
+2. *Connect edges*: For all pairs /(s1, s2)/ where /s1, s2/ /E/ *S*, an edge exists from /s1/ to /s2/ if /similarity/ (s1, s2) > minimum.
 3. *Find connected components*: The set of connected components of the graph *T* gives the grouping *G* that we require.
+
+** Usage
+*** Stitching
+You can find groups of similar strings based on a similarity function from a list of similar strings. The similarity function must be present in the database. Some similarity functions are present amongst the kosha database migrations in =resources/migrations/=.
+
+**** If the strings are in an edn file
+Use the REPL from the =kosha.stitching.core= namespace.
+1. Read the strings: =(data/read-scraped "output/test-data.edn")= and write the strings to db: =(def names-table (write-names-to-table all-ragams (create-names-table "temp_table"))=
+*names-table* is a map that describes the table: ={:name "temp_table" :id-column "name_id" :names-column "name"}=. The db will now contain a table called =temp_table= with all the strings in the =name= column.
+2. Get matches/edge-list: For a strategy that uses the string similarity function =similarity-score(string1, string2)= in Postgres with a minimum score of 8 (out of 10), we run =(def edges (get-edges-by-string names-table "similarity_score" 8))=.
+3. Get the groups of similar ragams: =(similar-ragams edges)=, where edges is defined in step 3.
+**** If the strings are in a table in the kosha db
+The list of strings should lie in a table having the following columns =(name_id bigint, name varchar(100))=.
+1. Define the map that describes the table, =(def names-table {:name "table_name_here" :id-column "name_id" :names-column "name"})=.
+2. Get matches/edge-list: For a strategy that uses the string similarity function =similarity-score(string1, string2)= in Postgres with a minimum score of 8 (out of 10), we run =(def edges (get-edges-by-string names-table "similarity_score" 8))=.
+3. Get the groups of similar ragams: =(similar-ragams edges)=, where edges is defined in step 3.
+Then, follow steps 3 and 4 described above for stitching strings in edn files.
+
+*** Scoring
+To score a strategy involving a /similarity function/ and a /minimum threshold similarity score/ for that function, we use a test set of ragam names scraped from Karnatik.
+We take the edge-list obtained in Step 2 of stitching these scraped names using a strategy and compare the resulting edge-list against a 'correct edge-list' obtained by scraping Karnatik.
+Instructions on how to scrape this data from scratch is available in the [[scraping.org][scraping]] doc.
+From the =kosha.stitching.core= namespace:
+**** Obtaining the 'correct edge-list'
+=(def *correct-edge-list (data/edge-list (data/read-scraped "output/classified-test-data.edn")))=
+**** Obtaining the edge list using a strategy
+Follow the steps mentioned under Usage -> Stitching until Step 3 to obtain the edge-list =*edge-list*=.
+**** Compare the two edge lists and score the strategy
+Run:
+#+BEGIN_SRC clojure
+(score/compare-edge-list *correct-edge-list *edge-list)
+#+END_SRC
+to obtain a map of different statistics. To understand these statistics, read about the scoring *Subproblem* in the [[stitching.org][stitching]] doc.

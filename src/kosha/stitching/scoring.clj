@@ -1,7 +1,7 @@
 (ns kosha.stitching.scoring
   (:require [clojure.set :as s]
-            [loom.alg :as graph-alg]
-            [loom.graph :as loom]))
+            [kosha.stitching.util :as util]
+            [loom.alg :as graph-alg]))
 
 (defn false-positives
   "Edges/matches that shouldn't exist, but do."
@@ -17,11 +17,6 @@
   "Edges/matches that should exist, and do. I.e. correct matches."
   [correct-edges edges]
   (s/intersection correct-edges edges))
-
-(defn graph
-  "Convert an edge set retrieved from Postgres into a loom graph."
-  [edge-set]
-  (apply loom/graph (map vec edge-set)))
 
 (defn fully-identified-sets
   "List all the groups of similar strings that were correctly and fully identified."
@@ -71,8 +66,8 @@
 
 (defn compare-edge-lists-by-sets
   [correct-edges result-edges]
-  (let [correct-graph (graph correct-edges)
-        result-graph (graph result-edges)]
+  (let [correct-graph (util/graph correct-edges)
+        result-graph (util/graph result-edges)]
     {:fully-identified (count (fully-identified-sets correct-graph result-graph))
      :wrongly-identified (count (wrongly-identified-sets correct-graph result-graph))
      :unidentified (count (unidentified-sets correct-graph result-graph))
