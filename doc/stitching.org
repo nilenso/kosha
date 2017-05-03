@@ -61,7 +61,7 @@ We need to group a set *S* of strings, into a set *G* of sets, where for each se
 *** Scoring: evaluating the quality of stitching
 A common type of stitching strategy for merging similar ragams or kritis in Kosha involves:
 - A list of strings /S/, e.g. =["aabheri", "Abheri", "abhiru", "gaula", "gowla"]=
-- A string similarity function *f*, e.g. =levenshtein("string1","string2")=
+- A string similarity function *f*, e.g. =soundex("string1","string2")=
 - A minimum value *min* of the similarity function *f* applied to two strings, for them to be considered a match.
 
 The output of a strategy includes an edge-list of a graph: a collection of pairs of strings (/s1/, /s2/) such that *f* (/s1/, /s2/) > *min*.
@@ -70,28 +70,30 @@ For example, an edge list may look like:
 #{#{"aabheri" "Abheri"} #{"Abheri" "abhiru"} #{"aabheri" "abhiru"} #{"gaula" "gowla"}}
 #+END_SRC
 
-In order to evaluate the quality of a stitching strategy, we use a test data set of 'correct matches' scraped from the [[http://www.karnatik.com/ragas.shtml][list of ragas in Karnatik]] and compare it against the matches obtained by our strategy. This returns a *Score* map, and the what the keys of this map mean are explained the next section.
+In order to evaluate the quality of a stitching strategy, we use a test data set of 'correct matches' scraped from the [[http://www.karnatik.com/ragas.shtml][list of ragas in Karnatik]] and compare it against the matches obtained by our strategy. This returns a *score map*, and the stats provided by this map are explained in the next section.
 
 *** Score Map: description of stats
-Evaluating =similarity_score= function (which is a combination of levenshtein, soundex and trigram string similarities with custom weightages), with a minimum similarity score of 8/10 against the test data gives this score map:
+The =similarity_score= function is a combination of levenshtein, soundex and trigram string similarities with custom weightages. Evaluating the =similarity_score= function with a =minimum similarity score of 8/10= against the 'correct test data' gives this score map:
 #+BEGIN_SRC clojure
-{:by-edges {:totals {:result-matches 1753,
-                     :expected-matches 3120},
-            :matches {:false-negatives 1461,
-                      :false-positives 94,
-                      :true-positives 1659},
+{:by-edges {:totals      {:result-matches 1753,
+                          :expected-matches 3120},
+            :matches     {:false-negatives 1461,
+                          :false-positives 94,
+                          :true-positives 1659},
             :percentages {:true-pos-by-exp-matches 53.173077,
                           :true-pos-by-res-matches 94.637764}},
- :by-sets {:fully-identified 390,
-           :wrongly-identified 243,
-           :unidentified 256,
-           :partially-correct-subsets 202,
+
+ :by-sets {:fully-identified            390,
+           :wrongly-identified          243,
+           :unidentified                256,
+           :partially-correct-subsets   202,
            :partially-correct-supersets 50}}
 #+END_SRC
 
 
 **** By Edges
 This key contains stats obtained by comparing the existence or the absence of a match (string pair) in the resultant edge-list, compared to the edge-list of the 'correct data set'.
+
 Example edge-list: =#{#{"aabheri" "Abheri"} #{"Abheri" "abhiru"} #{"aabheri" "abhiru"} #{"gaula" "gowla"}}=.
 
 1. Totals:
@@ -107,18 +109,21 @@ Example edge-list: =#{#{"aabheri" "Abheri"} #{"Abheri" "abhiru"} #{"aabheri" "ab
 
 **** By Sets
 This key contains stats obtained by comparing /sets/ of similar strings from the data.
-Example set of sets of similar strings: =#{#{"aabheri" "Abheri" "abhiru"} #{"gaula" "gowla"}}=. From now on, we'll call each element of this set a /similarity grouping/, or in short: /grouping/.
+
+Example set of sets of similar strings: =#{#{"aabheri" "Abheri" "abhiru"} #{"gaula" "gowla"}}=.
+
+From now on, we'll call each element of this set a /similarity grouping/, or in short: /grouping/.
 
 1. Fully Identified Sets
-   The no. of /groupings/ obtained by the strategy that /exactly/ matches the /groupings/ in the 'correct data set'.
+   + The no. of /groupings/ obtained by the strategy that /exactly/ matches the /groupings/ in the 'correct data set'.
 2. Wrongly Identified Sets
-   The no. of /groupings/ obtained by the strategy that did not /exactly/ match the /groupings/ in the 'correct data set'. This name is misleading, as this disregards partial matches.
+   + The no. of /groupings/ obtained by the strategy that did not /exactly/ match the /groupings/ in the 'correct data set'. This name is misleading, as this disregards partial matches.
 3. Unidentified Sets
-   The no. of /groupings/ that were in the 'correct data set', but were /not/ identified exactly by the strategy.
+   + The no. of /groupings/ that were in the 'correct data set', but were /not/ identified exactly by the strategy.
 4. Partially Correct Subsets
-   The no. of /groupings/ in the wrongly identified sets that are actually subsets of /groupings/ in the 'correct data set', i.e. /groupings/ that are correct but not complete.
+   + The no. of /groupings/ in the wrongly identified sets that are actually subsets of /groupings/ in the 'correct data set', i.e. /groupings/ that are correct but not complete.
 5. Partially Correct Supersets
-   The no. of /groupings/ in the wrongly identified sets that are actually supersets of /groupings/ in the 'correct data set', i.e. /groupings/ that are complete but containe one or more incorrect matches.
+   + The no. of /groupings/ in the wrongly identified sets that are actually supersets of /groupings/ in the 'correct data set', i.e. /groupings/ that are complete but containe one or more incorrect matches.
 
 ** Usage
 *** Stitching
