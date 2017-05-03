@@ -3,7 +3,8 @@
   :url "http://r4g4.com"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[bidi "1.19.0"]
+  :dependencies [[aysylu/loom "1.0.0"]
+                 [bidi "1.19.0"]
                  [cheshire "5.4.0"]
                  [clj-http "2.0.0"]
                  [com.taoensso/timbre "2.7.1"]

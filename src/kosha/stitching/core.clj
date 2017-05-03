@@ -51,12 +51,12 @@
         edges (db-util/run-query q)]
     (set (map #(hash-set (:source %) (:target %)) edges))))
 
-(defn score-strategy
-  "Example usage for scoring a strategy. In this case, similarity_score with min 7/10."
-  []
-  (let [all-ragams (data/read-scraped "output/test-data.edn")
-        classified-ragams (data/read-scraped "output/classified-test-data.edn")
-        names-table (write-names-to-table all-ragams (create-names-table "temp_table"))
-        expected-edges (data/edge-list classified-ragams)
-        actual-edges (get-edges-by-string names-table "similarity_score" 7)]
-    (score/compare-edge-lists expected-edges actual-edges)))
+(comment
+  ;; Example usage for scoring a strategy. In this case, similarity_score with min 7/10.
+  (def *all-ragams (data/read-scraped "output/test-data.edn"))
+  (def *classified-ragams (data/read-scraped "output/classified-test-data.edn"))
+  (def *names-table (write-names-to-table all-ragams (create-names-table "temp_table")))
+  ;; In case you already have a table of names, then use (def *names-table {:name "temp_table" :id-column "id" :names-column "name"})
+  (def *expected-edges (data/edge-list *classified-ragams))
+  (def *actual-edges (get-edges-by-string *names-table "similarity_score" 7))
+  (def *score (score/compare-edge-lists *expected-edges *actual-edges)))
