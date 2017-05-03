@@ -32,9 +32,9 @@
 
 (defn get-edges-by-id
   "Gets the id->id edge list of the similarity graph, given a similarity function and a min threshold value."
-  [table similarity-fn-name threshold-min]
-  (let [q ["SELECT source, target FROM similarity_graph_id(?::text, ?::text, ?::int);"
-           (:name table) similarity-fn-name threshold-min]
+  [table similarity-fn-name threshold]
+  (let [q ["SELECT source, target FROM similarity_graph_id(?::text, ?::text, ?, ?);"
+           (:name table) similarity-fn-name threshold comparator]
         edges (db-util/run-query q)]
     (set (map #(hash-set (:source %) (:target %)) edges))))
 
@@ -47,12 +47,40 @@
 
 (defn get-edges-by-string
   "Gets the string->string edge list of the similarity graph, given a similarity function and a min threshold value."
-  [table similarity-fn-name threshold-min]
-  (let [q ["SELECT source, target FROM similarity_graph_string(?::text, ?::text, ?::int);"
-           (:name table) similarity-fn-name threshold-min]
+  [table similarity-fn-name comparator threshold]
+  (let [q ["SELECT source, target FROM similarity_graph_string(?::text, ?::text, ?, ?);"
+           (:name table) similarity-fn-name threshold comparator]
         edges (db-util/run-query q)]
     (set (map #(hash-set (:source %) (:target %)) edges))))
 
 (defn similar-ragams
   [edges]
   (graph/connected-components (util/graph edges)))
+
+
+(defonce *all-ragams (data/read-scraped "output/test-data.edn"))
+(defonce *classified-ragams (data/read-scraped "output/classified-test-data.edn"))
+(defonce *expected-edges (data/edge-list *classified-ragams))
+
+(defn score-strategy [f comparator threshold]
+  (let [s (get-edges-by-string {:name "all_ragam_names"} f comparator threshold)]
+    (def *s s)
+    (score/compare-edge-lists *expected-edges s)))
+
+(defn score-all-strategies []
+  {:similarity-0.8 (score-strategy "similarity" ">" 0.8)
+   :similarity-0.75 (score-strategy "similarity" ">" 0.75)
+   :similarity-0.7 (score-strategy "similarity" ">" 0.7)
+   :similarity-0.675 (score-strategy "similarity" ">" 0.675)
+   :similarity-0.65 (score-strategy "similarity" ">" 0.65)
+   :similarity-0.625 (score-strategy "similarity" ">" 0.625)
+   :similarity-0.6 (score-strategy "similarity" ">" 0.6)
+   :levenshtein-1 (score-strategy "levenshtein" "<=" 1)
+   :soundex (score-strategy "difference" ">" 3)})
+
+
+
+(comment
+  (stencil/replace "similarity({first}, {second}) + levenshtein({first}, {second}) > {value}"
+                   {:first first
+                    :second second}))
