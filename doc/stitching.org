@@ -74,7 +74,7 @@ We need to group a set *S* of strings, into a set *G* of sets, where for each se
 *** Scoring: evaluating the quality of stitching
 A common type of stitching strategy for merging similar ragams or kritis in Kosha involves:
 - A list of strings /S/, e.g. =["aabheri", "Abheri", "abhiru", "gaula", "gowla"]=
-- A string similarity function *f*, e.g. =soundex("string1","string2")=
+- A string similarity function *f*, e.g. =soundex("string1","string2")=. A distance function can be turned into a similarity function using =dist: (1-similarity)=.
 - A minimum value *min* of the similarity function *f* applied to two strings, for them to be considered a match.
 
 The output of a strategy includes an edge-list of a graph: a collection of pairs of strings (/s1/, /s2/) such that *f* (/s1/, /s2/) > *min*.
@@ -153,8 +153,9 @@ Use the REPL from the =kosha.stitching.core= namespace.
 2) Get matches/edge-list:
     For a strategy that uses the string similarity function =similarity_score(string1, string2)= in Postgres with a minimum score of *8* (/out of 10/), we run:
     #+BEGIN_SRC clojure
-    (def edges (get-edges-by-string names-table "similarity_score" 8))=.
+    (def edges (get-edges-by-string names-table "similarity_score({{a}}, {{b}}) > 7"))
     #+END_SRC
+    Note that the you have to use =a= and =b= within the ={{= =}}= to represent the first and second string, respectively.
 3) Get the groups of similar ragams:
     #+BEGIN_SRC clojure
     (similar-ragams edges)
@@ -169,8 +170,9 @@ The list of strings should lie in a table having the following columns =(name_id
 2. Get matches/edge-list:
    For a strategy that uses the string similarity function =similarity-score(string1, string2)= in Postgres with a minimum score of 8 (out of 10), we run:
    #+BEGIN_SRC clojure
-   (def edges (get-edges-by-string names-table "similarity_score" 8))
+   (def edges (get-edges-by-string names-table "similarity_score({{a}}, {{b}}) > 7"))
    #+END_SRC
+   Note that the you have to use =a= and =b= within the ={{= =}}= to represent the first and second string, respectively.
 3. Get the groups of similar ragams:
    #+BEGIN_SRC clojure
    (similar-ragams edges)
