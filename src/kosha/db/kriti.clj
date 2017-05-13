@@ -19,3 +19,7 @@
             WHERE kriti_id = ?; "
            kriti-id]]
     (vec (db-util/run-query q))))
+
+(defn all-kritis []
+  (let [q ["SELECT k.* FROM kritis k"]]
+    (db-util/run-query q)))
