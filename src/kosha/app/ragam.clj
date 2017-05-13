@@ -12,8 +12,10 @@
   "Retrieves details of a ragam and its kritis, given the request containing ragam-id param."
   [{:keys [params] :as request}]
   (let [ragam-id  (Integer/parseInt (:ragam-id params))
-        ragam     (db/ragam ragam-id) ]
-    (->> {:ragam        ragam
-          :kritis       (db/kritis-of-ragam ragam-id)
-          :parent-ragam (parent-ragam ragam)}
-         util/json-response)))
+        ragam     (db/ragam ragam-id)]
+    (if (nil? ragam)
+      (error-response 404 "Resource not found.")
+      (->> {:ragam        ragam
+            :kritis       (db/kritis-of-ragam ragam-id)
+            :parent-ragam (parent-ragam ragam)}
+           util/json-response))))

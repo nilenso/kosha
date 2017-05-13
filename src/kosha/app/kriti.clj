@@ -21,5 +21,7 @@
   (let [kriti-id   (Integer/parseInt (:kriti-id params))
         kriti      (db/kriti kriti-id)
         renditions (db/renditions-of-kriti kriti-id)]
-    (util/json-response {:kriti (update kriti :lyrics parse-lyrics)
-                         :renditions renditions})))
+    (if (nil? kriti)
+        (util/error-response 404 "Resource not found.")
+        (util/json-response {:kriti (update kriti :lyrics parse-lyrics)
+                             :renditions renditions}))))
