@@ -14,7 +14,7 @@
   (let [ragam-id  (Integer/parseInt (:ragam-id params))
         ragam     (db/ragam ragam-id)]
     (if (nil? ragam)
-      (error-response 404 "Resource not found.")
+      (util/error-response 404 "Resource not found.")
       (->> {:ragam        ragam
             :kritis       (db/kritis-of-ragam ragam-id)
             :parent-ragam (parent-ragam ragam)}
