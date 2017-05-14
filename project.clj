@@ -22,7 +22,7 @@
                  [ring-middleware-format "0.3.2" :exclusions [ring]]
                  [ring/ring-core "1.5.0"]
                  [ring/ring-jetty-adapter "1.3.2"]
-                 [ring/ring-json "0.12.0"]
+                 [ring/ring-json "0.4.0"]
                  [stencil "0.3.5"]]
   :plugins       [[refactor-nrepl "2.3.0-SNAPSHOT"]
                  [cider/cider-nrepl "0.12.0"]]
