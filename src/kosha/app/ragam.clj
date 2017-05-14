@@ -1,6 +1,7 @@
 (ns kosha.app.ragam
   (:require [kosha.db.ragam :as db]
-            [kosha.app.util :as util]))
+            [kosha.app.util :as util]
+            [ring.util.response :as res]))
 
 (defn parent-ragam
   "Retrieves the parent ragam of a ragam, given the ragam map."
@@ -13,9 +14,8 @@
   [{:keys [params] :as request}]
   (let [ragam-id  (Integer/parseInt (:ragam-id params))
         ragam     (db/ragam ragam-id)]
-    (if (nil? ragam)
+    (if (empty? ragam)
       (util/error-response 404 "Resource not found.")
-      (->> {:ragam        ragam
-            :kritis       (db/kritis-of-ragam ragam-id)
-            :parent-ragam (parent-ragam ragam)}
-           util/json-response))))
+      (res/response {:ragam        ragam
+                     :kritis       (db/kritis-of-ragam ragam-id)
+                     :parent-ragam (parent-ragam ragam)}))))

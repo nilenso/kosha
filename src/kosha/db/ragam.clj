@@ -2,7 +2,6 @@
   (:require [clojure.set :as set]
             [kosha.db.util :as db-util]))
 
-
 (def ragam-ks
   [:ragam-id :name :arohanam :avarohanam :ragam-link :melakartha :mela-ragam-id :data-source])
 

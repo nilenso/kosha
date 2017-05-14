@@ -11,16 +11,20 @@
             [ring.adapter.jetty :as jetty]
             [ring.middleware.params :as params]
             [ring.middleware.keyword-params :as kw-params]
+            [ring.middleware.json :as json]
             [taoensso.timbre :as log]))
 
 (def routes ["/" [["" (br/->ResourcesMaybe {:prefix "public/"})]
                   ["search" search/handler]
                   ["ragam/" {[:ragam-id] ragam/handler}]
-                  ["kriti/" {[:kriti-id] kriti/handler}]]])
+                  ["kriti/" {[:kriti-id] kriti/handler}]
+                  [true (fn [_] (util/error-response 404 "Page not found."))]]
+             true (fn [_] (util/error-response 404 "Page not found."))])
 
 (def main-handler
   (-> (br/make-handler routes)
       kw-params/wrap-keyword-params
+      json/wrap-json-response
       params/wrap-params
       logging/wrap-log-request-response
       logging/wrap-error-logging

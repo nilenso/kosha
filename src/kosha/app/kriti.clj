@@ -1,7 +1,8 @@
 (ns kosha.app.kriti
   (:require [kosha.db.kriti :as db]
             [kosha.app.util :as util]
-            [pg-hstore.core :as hs]))
+            [pg-hstore.core :as hs]
+            [ring.util.response :as res]))
 
 (defn parse-named-stanzas
   [{:keys [has-named-stanzas content] :as lyrics}]
@@ -21,7 +22,7 @@
   (let [kriti-id   (Integer/parseInt (:kriti-id params))
         kriti      (db/kriti kriti-id)
         renditions (db/renditions-of-kriti kriti-id)]
-    (if (nil? kriti)
+    (if (empty? kriti)
         (util/error-response 404 "Resource not found.")
-        (util/json-response {:kriti (update kriti :lyrics parse-lyrics)
-                             :renditions renditions}))))
+        (res/response {:kriti (update kriti :lyrics parse-lyrics)
+                       :renditions renditions}))))
