@@ -42,14 +42,14 @@ Example:
 ```json
 Status Code: 200
 Body: {
-"kriti": {"kriti_id":3575,"name":"shrI_lalitE","composer":"muthaiah_bAgavatar","taala":null,"url":null,"lyrics":null,"meaning":null,"ragam_id":740,"data_source":"Sangeethapriya"},
+"kriti": {"kriti-id":3575,"name":"shrI-lalitE","composer":"muthaiah-bAgavatar","taala":null,"url":null,"lyrics":null,"meaning":null,"ragam-id":740,"data-source":"Sangeethapriya"},
 "renditions":[
-{"rendition_id":15523,"concert_id":"01-C1541",
-"concert_url":"http://www.sangeethamshare.org/tvg/UPLOADS-1601---1800/1677-MB-Chamundamba_Ashtothra_Krithis-Part-7/",
-"track_number":6,
+{"rendition-id":15523,"concert-id":"01-C1541",
+"concert-url":"http://www.sangeethamshare.org/tvg/UPLOADS-1601---1800/1677-MB-Chamundamba-Ashtothra-Krithis-Part-7/",
+"track-number":6,
 "url":"http://sangeethapriya.ravisnet.com:8080/cgi-bin/download.cgi?c2FuZ2VldGhhbXNoYXJlLm9yZy9wdWJsaWNfaHRtbC90dmcvVVBMT0FEUy0xNjAxLS0tMTgwMC8xNjc3LU1CLUNoYW11bmRhbWJhX0FzaHRvdGhyYV9Lcml0aGlzLVBhcnQtNy8wNi1TaHJpX2xhbGl0ZV9qYWdhbm1hdGUtbmFkYW5hbWFrcml5YS1tdXR0aWFoX2JoYWdhdmF0YXIubXAz",
-"main_artist":"Chinmaya Sisters - Uma,Radhika",
-"kriti_name":"shrI_lalitE",
-"kriti_id":3575}]
+"main-artist":"Chinmaya Sisters - Uma,Radhika",
+"kriti-name":"shrI-lalitE",
+"kriti-id":3575}]
 }
 ```
