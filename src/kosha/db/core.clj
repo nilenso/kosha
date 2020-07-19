@@ -1,9 +1,9 @@
 (ns kosha.db.core
   (:require [clojure.java.jdbc :as j])
   (:import java.sql.Connection
-           org.postgresql.jdbc4.Jdbc4Array))
+           [org.postgresql.jdbc PgArray]))
 
-(defn read-array [^org.postgresql.jdbc4.Jdbc4Array jdbc-4-array]
+(defn read-array [^PgArray jdbc-4-array]
   (when jdbc-4-array
     (into [] (.getArray jdbc-4-array))))
 
